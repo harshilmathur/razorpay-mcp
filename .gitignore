@@ -1,0 +1,90 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+coverage.xml
+*.cover
+.coverage
+.coverage.*
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Flask
+instance/
+.webassets-cache
+flask_session/
+
+# Replit
+.replit
+.replit.nix
+poetry.lock
+uv.lock
+
+# Keep pyproject.toml for dependency information
+# pyproject.toml
+
+# Logs
+*.log
+logs/
+
+# Environment variables and secrets
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.secrets
+
+# Razorpay specific
+razorpay-logs/
+test_data/
+attached_assets/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.bak
+.cache/
+tmp/
+
+# Documentation generated files
+docs/_build/
+site/
+
+# Package specific
+node_modules/
+.npm

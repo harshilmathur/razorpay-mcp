@@ -1,0 +1,20 @@
+{
+  "name": "Razorpay MCP",
+  "description": "Razorpay payment integration for Claude Desktop using the official MCP SDK",
+  "toolType": "commandTool",
+  "command": {
+    "command": "python3",
+    "args": ["razorpay_mcp_server.py"]
+  },
+  "env": {
+    "RAZORPAY_KEY_ID": "",
+    "RAZORPAY_KEY_SECRET": ""
+  },
+  "documentationUrl": "https://razorpay.com/docs/api",
+  "suggestedInstructions": [
+    "Help me create a new payment link for my customer",
+    "Check the status of my latest order",
+    "Create a new customer profile",
+    "Process a refund for the latest payment"
+  ]
+}
