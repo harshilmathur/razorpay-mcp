@@ -312,6 +312,60 @@ class RazorpayClient:
             logger.error(traceback.format_exc())
             raise
             
+    # Plan Methods
+    def get_plan(self, params):
+        """Get plan details by plan ID."""
+        try:
+            plan_id = params.get('id')
+            if not plan_id:
+                raise ValueError("Plan ID is required")
+            
+            return self.client.plan.fetch(plan_id)
+        except Exception as e:
+            logger.error(f"Error fetching plan: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+            
+    def list_plans(self, params):
+        """List plans with optional filtering."""
+        try:
+            options = {}
+            if 'count' in params:
+                options['count'] = params['count']
+            if 'skip' in params:
+                options['skip'] = params['skip']
+                
+            return self.client.plan.all(options)
+        except Exception as e:
+            logger.error(f"Error listing plans: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+            
+    def create_plan(self, params):
+        """Create a new plan."""
+        try:
+            if not params.get('period'):
+                raise ValueError("Period is required")
+            if not params.get('interval'):
+                raise ValueError("Interval is required")
+            if not params.get('item'):
+                raise ValueError("Item details are required")
+                
+            plan_data = {
+                'period': params.get('period'),
+                'interval': params.get('interval'),
+                'item': params.get('item')
+            }
+            
+            if 'notes' in params:
+                plan_data['notes'] = params['notes']
+                
+            return self.client.plan.create(plan_data)
+        except Exception as e:
+            logger.error(f"Error creating plan: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+    
     # Subscription Methods
     def get_subscription(self, params):
         """Get subscription details by subscription ID."""

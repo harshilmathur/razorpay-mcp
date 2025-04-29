@@ -155,6 +155,35 @@ async def resume_subscription(arguments):
         
     return razorpay_client.resume_subscription(params)
 
+# Plan handlers
+async def get_plan(arguments):
+    plan_id = arguments.get("plan_id")
+    logger.info(f"Executing get_plan with plan_id: {plan_id}")
+    return razorpay_client.get_plan({"id": plan_id})
+
+async def list_plans(arguments):
+    params = {}
+    if "count" in arguments:
+        params["count"] = arguments["count"]
+    if "skip" in arguments:
+        params["skip"] = arguments["skip"]
+        
+    logger.info(f"Executing list_plans with arguments: {params}")
+    return razorpay_client.list_plans(params)
+
+async def create_plan(arguments):
+    params = {
+        "period": arguments.get("period"),
+        "interval": arguments.get("interval"),
+        "item": arguments.get("item")
+    }
+    
+    if "notes" in arguments:
+        params["notes"] = arguments["notes"]
+        
+    logger.info(f"Executing create_plan with arguments: {params}")
+    return razorpay_client.create_plan(params)
+
 def decorate_tool(fn, name, description):
     """Add metadata to tool function for documentation purposes"""
     fn.__name__ = name
