@@ -239,6 +239,68 @@ def create_mcp_server():
         description="Get refund details by refund ID"
     )
     
+    # Settlement tools
+    server.add_tool(
+        fn=get_settlement,
+        name="razorpay_settlements_get",
+        description="Get settlement details by settlement ID"
+    )
+    
+    server.add_tool(
+        fn=list_settlements,
+        name="razorpay_settlements_list",
+        description="List settlements with optional filtering"
+    )
+    
+    server.add_tool(
+        fn=create_ondemand_settlement,
+        name="razorpay_settlements_create_ondemand",
+        description="Create an on-demand settlement"
+    )
+    
+    server.add_tool(
+        fn=get_settlement_report,
+        name="razorpay_settlements_report",
+        description="Get settlement reports with filtering by year, month, and day"
+    )
+    
+    # Subscription tools
+    server.add_tool(
+        fn=get_subscription,
+        name="razorpay_subscriptions_get",
+        description="Get subscription details by subscription ID"
+    )
+    
+    server.add_tool(
+        fn=list_subscriptions,
+        name="razorpay_subscriptions_list",
+        description="List subscriptions with optional filtering"
+    )
+    
+    server.add_tool(
+        fn=create_subscription,
+        name="razorpay_subscriptions_create",
+        description="Create a new subscription for a customer"
+    )
+    
+    server.add_tool(
+        fn=cancel_subscription,
+        name="razorpay_subscriptions_cancel",
+        description="Cancel an active subscription"
+    )
+    
+    server.add_tool(
+        fn=pause_subscription,
+        name="razorpay_subscriptions_pause",
+        description="Pause an active subscription"
+    )
+    
+    server.add_tool(
+        fn=resume_subscription,
+        name="razorpay_subscriptions_resume",
+        description="Resume a paused subscription"
+    )
+    
     # Add resources - need uri field
     server.add_resource(
         Resource(
@@ -301,6 +363,48 @@ def create_mcp_server():
         )
     )
     
+    server.add_resource(
+        Resource(
+            id="razorpay_subscription_sample",
+            name="Razorpay Subscription Example",
+            description="Example Razorpay subscription payload",
+            content=json.dumps({
+                "plan_id": "plan_JKQNyZt0DwLa4Y",
+                "customer_id": "cust_JKQKkeQicg3EaU",
+                "total_count": 12,
+                "quantity": 1,
+                "start_at": 1655991343,
+                "expire_by": 1687527343,
+                "customer_notify": True,
+                "notes": {
+                    "subscription_type": "premium",
+                    "billing_cycle": "monthly"
+                }
+            }),
+            format="json",
+            uri="mcp-resources://razorpay/subscription-sample"  # Required by your SDK
+        )
+    )
+    
+    server.add_resource(
+        Resource(
+            id="razorpay_settlement_sample",
+            name="Razorpay Settlement Example",
+            description="Example Razorpay on-demand settlement payload",
+            content=json.dumps({
+                "amount": 100000,
+                "settle_full_balance": False,
+                "description": "On-demand settlement for May 2025",
+                "notes": {
+                    "reason": "Month-end reconciliation",
+                    "accounting_period": "May 2025"
+                }
+            }),
+            format="json",
+            uri="mcp-resources://razorpay/settlement-sample"  # Required by your SDK
+        )
+    )
+    
     # Add prompts using Prompt class
     server.add_prompt(
         Prompt(
@@ -335,6 +439,42 @@ def create_mcp_server():
             name="Check Payment Status",
             description="Check status of an existing Razorpay payment",
             content="Check the status of Razorpay payment with ID {{payment_id}} and summarize the results, including the amount, currency, status, and creation date."
+        )
+    )
+    
+    server.add_prompt(
+        Prompt(
+            id="razorpay_create_subscription",
+            name="Create Razorpay Subscription",
+            description="Create a new subscription in Razorpay",
+            content="Create a new Razorpay subscription with the following details:\n- Plan ID: {{plan_id}}\n- Customer ID: {{customer_id}}\n- Total Count: {{total_count}} (number of billing cycles)\n- Quantity: {{quantity}}\n- Start Date: {{start_at}}\n- Expire By: {{expire_by}}\n\nPlease provide the subscription ID and other details once created."
+        )
+    )
+    
+    server.add_prompt(
+        Prompt(
+            id="razorpay_manage_subscription",
+            name="Manage Razorpay Subscription",
+            description="Manage an existing subscription in Razorpay",
+            content="Perform the following action on the Razorpay subscription with ID {{subscription_id}}:\n\n{{action}} (cancel/pause/resume)\n\nPlease provide details about the updated subscription status once the action is completed."
+        )
+    )
+    
+    server.add_prompt(
+        Prompt(
+            id="razorpay_create_settlement",
+            name="Create Razorpay On-demand Settlement",
+            description="Create an on-demand settlement in Razorpay",
+            content="Create a new on-demand settlement in Razorpay with the following details:\n- Amount: {{amount}}\n- Settle Full Balance: {{settle_full_balance}}\n- Description: {{description}}\n- Notes: {{notes}}\n\nPlease provide the settlement ID and other details once created."
+        )
+    )
+    
+    server.add_prompt(
+        Prompt(
+            id="razorpay_check_settlement",
+            name="Check Settlement Details",
+            description="Check details of an existing Razorpay settlement",
+            content="Check the details of Razorpay settlement with ID {{settlement_id}} and summarize the results, including the amount, fees, tax, status, and creation date."
         )
     )
     

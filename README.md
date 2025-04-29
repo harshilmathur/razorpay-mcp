@@ -12,13 +12,21 @@ This project creates a bridge between AI assistants (like Claude) and Razorpay's
 - Create and track orders
 - Manage customer profiles
 - Generate payment links
+- Handle subscription billing
+- Process settlements and disbursements
 - And more...
 
 The implementation follows the official MCP specification and uses the Razorpay API to provide a seamless connection between AI assistants and payment processing capabilities.
 
 ## Features
 
-- **Comprehensive Razorpay Integration**: Access to payments, refunds, orders, customers, and payment links
+- **Comprehensive Razorpay Integration**: 
+  - **Payments**: Fetch and list payments, create and manage refunds
+  - **Orders**: Create, fetch, and list orders
+  - **Customers**: Create and manage customer profiles
+  - **Payment Links**: Generate shareable payment links
+  - **Subscriptions**: Create and manage recurring billing
+  - **Settlements**: Process settlements and generate reports
 - **Dual-mode Operation**: 
   - HTTP server with web interface for API access
   - Direct stdio connection for Claude Desktop integration
@@ -83,17 +91,38 @@ To use this MCP server with Claude Desktop:
 
 The MCP server provides the following Razorpay API tools:
 
-- **payment_fetch**: Fetch payment details by payment ID
-- **list_payments**: List payments with optional filtering
-- **order_create**: Create a new order
-- **order_fetch**: Get order details by order ID
-- **list_orders**: List orders with optional filtering
-- **customer_create**: Create a new customer
-- **customer_fetch**: Get customer details by customer ID
-- **payment_link_create**: Create a new payment link
-- **payment_link_fetch**: Get payment link details by payment link ID
-- **refund_create**: Create a new refund
-- **refund_fetch**: Get refund details by refund ID
+### Payment and Refund Tools
+- **razorpay_payments_get**: Fetch payment details by payment ID
+- **razorpay_payments_list**: List payments with optional filtering
+- **razorpay_refunds_create**: Create a new refund
+- **razorpay_refunds_get**: Get refund details by refund ID
+
+### Order Tools
+- **razorpay_orders_create**: Create a new order
+- **razorpay_orders_get**: Get order details by order ID
+- **razorpay_orders_list**: List orders with optional filtering
+
+### Customer Tools
+- **razorpay_customers_create**: Create a new customer
+- **razorpay_customers_get**: Get customer details by customer ID
+
+### Payment Link Tools
+- **razorpay_payment_links_create**: Create a new payment link
+- **razorpay_payment_links_get**: Get payment link details by payment link ID
+
+### Settlement Tools
+- **razorpay_settlements_get**: Get settlement details by settlement ID
+- **razorpay_settlements_list**: List settlements with optional filtering
+- **razorpay_settlements_create_ondemand**: Create an on-demand settlement
+- **razorpay_settlements_report**: Get settlement reports with filtering
+
+### Subscription Tools
+- **razorpay_subscriptions_get**: Get subscription details by subscription ID
+- **razorpay_subscriptions_list**: List subscriptions with optional filtering
+- **razorpay_subscriptions_create**: Create a new subscription for a customer
+- **razorpay_subscriptions_cancel**: Cancel an active subscription
+- **razorpay_subscriptions_pause**: Pause an active subscription
+- **razorpay_subscriptions_resume**: Resume a paused subscription
 
 ## Resources and Prompts
 
@@ -104,6 +133,8 @@ The server also provides helpful resources and prompt templates to guide Claude 
 - **razorpay_order_sample**: Example order payload
 - **razorpay_customer_sample**: Example customer payload
 - **razorpay_payment_link_sample**: Example payment link payload
+- **razorpay_subscription_sample**: Example subscription payload
+- **razorpay_settlement_sample**: Example on-demand settlement payload
 
 ### Prompts
 
@@ -111,6 +142,10 @@ The server also provides helpful resources and prompt templates to guide Claude 
 - **razorpay_create_customer**: Template for creating customers
 - **razorpay_create_payment_link**: Template for creating payment links
 - **razorpay_check_payment_status**: Template for checking payment status
+- **razorpay_create_subscription**: Template for creating subscriptions
+- **razorpay_manage_subscription**: Template for managing existing subscriptions
+- **razorpay_create_settlement**: Template for creating on-demand settlements
+- **razorpay_check_settlement**: Template for checking settlement details
 
 ## API Endpoints (HTTP Server)
 
@@ -246,19 +281,56 @@ Alternatively, you can use the provided `claude_desktop_config.json` file and im
 
 The MCP server provides the following Razorpay integration tools:
 
+#### Payment Operations
+
 | Tool Name | Description | Parameters |
 |-----------|-------------|------------|
-| `payment_fetch` | Fetch payment details | `payment_id` (string) |
-| `list_payments` | List payments with filtering | Various filter options |
-| `order_create` | Create a new order | `amount` (int), `currency` (string), etc. |
-| `order_fetch` | Get order details | `order_id` (string) |
-| `list_orders` | List orders with filtering | Various filter options |
-| `customer_create` | Create a new customer | `name` (string), `email` (string), etc. |
-| `customer_fetch` | Get customer details | `customer_id` (string) |
-| `payment_link_create` | Create a payment link | `amount` (int), `description` (string), etc. |
-| `payment_link_fetch` | Get payment link details | `payment_link_id` (string) |
-| `refund_create` | Create a refund | `payment_id` (string), `amount` (int), etc. |
-| `refund_fetch` | Get refund details | `refund_id` (string) |
+| `razorpay_payments_get` | Fetch payment details | `payment_id` (string) |
+| `razorpay_payments_list` | List payments with filtering | Various filter options |
+| `razorpay_refunds_create` | Create a refund | `payment_id` (string), `amount` (int), etc. |
+| `razorpay_refunds_get` | Get refund details | `refund_id` (string) |
+
+#### Order Operations
+
+| Tool Name | Description | Parameters |
+|-----------|-------------|------------|
+| `razorpay_orders_create` | Create a new order | `amount` (int), `currency` (string), etc. |
+| `razorpay_orders_get` | Get order details | `order_id` (string) |
+| `razorpay_orders_list` | List orders with filtering | Various filter options |
+
+#### Customer Operations
+
+| Tool Name | Description | Parameters |
+|-----------|-------------|------------|
+| `razorpay_customers_create` | Create a new customer | `name` (string), `email` (string), etc. |
+| `razorpay_customers_get` | Get customer details | `customer_id` (string) |
+
+#### Payment Link Operations
+
+| Tool Name | Description | Parameters |
+|-----------|-------------|------------|
+| `razorpay_payment_links_create` | Create a payment link | `amount` (int), `description` (string), etc. |
+| `razorpay_payment_links_get` | Get payment link details | `payment_link_id` (string) |
+
+#### Settlement Operations
+
+| Tool Name | Description | Parameters |
+|-----------|-------------|------------|
+| `razorpay_settlements_get` | Get settlement details | `settlement_id` (string) |
+| `razorpay_settlements_list` | List settlements with filtering | Various filter options |
+| `razorpay_settlements_create_ondemand` | Create an on-demand settlement | `amount` (int), `settle_full_balance` (bool), etc. |
+| `razorpay_settlements_report` | Get settlement reports | `year` (int), `month` (int), `day` (int), etc. |
+
+#### Subscription Operations
+
+| Tool Name | Description | Parameters |
+|-----------|-------------|------------|
+| `razorpay_subscriptions_get` | Get subscription details | `subscription_id` (string) |
+| `razorpay_subscriptions_list` | List subscriptions | Various filter options |
+| `razorpay_subscriptions_create` | Create a new subscription | `plan_id` (string), `customer_id` (string), etc. |
+| `razorpay_subscriptions_cancel` | Cancel a subscription | `subscription_id` (string), `cancel_at_cycle_end` (bool) |
+| `razorpay_subscriptions_pause` | Pause a subscription | `subscription_id` (string), `pause_at` (string) |
+| `razorpay_subscriptions_resume` | Resume a subscription | `subscription_id` (string), `resume_at` (string) |
 
 ### HTTP API Endpoints
 
