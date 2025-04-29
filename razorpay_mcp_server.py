@@ -330,6 +330,25 @@ def create_mcp_server():
         description="Resume a paused subscription"
     )
     
+    # Plan tools
+    server.add_tool(
+        fn=get_plan,
+        name="razorpay_plans_get",
+        description="Get plan details by plan ID"
+    )
+    
+    server.add_tool(
+        fn=list_plans,
+        name="razorpay_plans_list",
+        description="List plans with optional filtering"
+    )
+    
+    server.add_tool(
+        fn=create_plan,
+        name="razorpay_plans_create",
+        description="Create a new plan for subscriptions"
+    )
+    
     # Add resources - need uri field
     server.add_resource(
         Resource(
@@ -434,6 +453,30 @@ def create_mcp_server():
         )
     )
     
+    server.add_resource(
+        Resource(
+            id="razorpay_plan_sample",
+            name="Razorpay Plan Example",
+            description="Example Razorpay plan payload",
+            content=json.dumps({
+                "period": "monthly",
+                "interval": 1,
+                "item": {
+                    "name": "Premium Plan",
+                    "amount": 99900,
+                    "currency": "INR",
+                    "description": "Premium monthly subscription"
+                },
+                "notes": {
+                    "plan_type": "premium",
+                    "features": "Unlimited access, priority support"
+                }
+            }),
+            format="json",
+            uri="mcp-resources://razorpay/plan-sample"  # Required by your SDK
+        )
+    )
+    
     # Add prompts using Prompt class
     server.add_prompt(
         Prompt(
@@ -504,6 +547,15 @@ def create_mcp_server():
             name="Check Settlement Details",
             description="Check details of an existing Razorpay settlement",
             content="Check the details of Razorpay settlement with ID {{settlement_id}} and summarize the results, including the amount, fees, tax, status, and creation date."
+        )
+    )
+    
+    server.add_prompt(
+        Prompt(
+            id="razorpay_create_plan",
+            name="Create Razorpay Plan",
+            description="Create a new subscription plan in Razorpay",
+            content="Create a new Razorpay subscription plan with the following details:\n- Period: {{period}} (can be daily, weekly, monthly, yearly)\n- Interval: {{interval}} (number of periods between billings)\n- Item Details:\n  - Name: {{item.name}}\n  - Amount: {{item.amount}} (in smallest currency unit)\n  - Currency: {{item.currency}}\n  - Description: {{item.description}}\n\nPlease provide the plan ID and other details once created."
         )
     )
     

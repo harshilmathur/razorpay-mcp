@@ -345,6 +345,55 @@ RAZORPAY_TOOLS = [
                 "description": "When to resume the subscription (optional)"
             }
         }
+    },
+    
+    {
+        "name": "plan_fetch",
+        "description": "Fetch plan details",
+        "parameters": {
+            "plan_id": {
+                "type": "string",
+                "description": "Plan ID"
+            }
+        }
+    },
+    
+    {
+        "name": "plans_list",
+        "description": "List plans with optional filtering",
+        "parameters": {
+            "count": {
+                "type": "integer",
+                "description": "Number of plans to fetch (default: 10)"
+            },
+            "skip": {
+                "type": "integer",
+                "description": "Number of plans to skip (default: 0)"
+            }
+        }
+    },
+    
+    {
+        "name": "plan_create",
+        "description": "Create a new plan for subscriptions",
+        "parameters": {
+            "period": {
+                "type": "string",
+                "description": "Period type (daily, weekly, monthly, yearly)"
+            },
+            "interval": {
+                "type": "integer",
+                "description": "Number of periods between billings"
+            },
+            "item": {
+                "type": "object",
+                "description": "Item details including name, amount, currency and description"
+            },
+            "notes": {
+                "type": "object",
+                "description": "Additional notes (optional)"
+            }
+        }
     }
 ]
 
@@ -454,6 +503,31 @@ def execute_tool(tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             
         return razorpay_client.get_settlement_report(params)
         
+    # Plan tools
+    elif tool_name == "plan_fetch" or tool_name == "plan.fetch":
+        return razorpay_client.get_plan({"id": arguments.get("plan_id")})
+        
+    elif tool_name == "plans_list" or tool_name == "plans.list":
+        params = {}
+        if "count" in arguments:
+            params["count"] = arguments["count"]
+        if "skip" in arguments:
+            params["skip"] = arguments["skip"]
+            
+        return razorpay_client.list_plans(params)
+        
+    elif tool_name == "plan_create" or tool_name == "plan.create":
+        params = {
+            "period": arguments.get("period"),
+            "interval": arguments.get("interval"),
+            "item": arguments.get("item")
+        }
+        
+        if "notes" in arguments:
+            params["notes"] = arguments["notes"]
+            
+        return razorpay_client.create_plan(params)
+    
     # Subscription tools
     elif tool_name == "subscription_fetch" or tool_name == "subscription.fetch":
         return razorpay_client.get_subscription({"id": arguments.get("subscription_id")})
