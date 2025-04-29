@@ -94,6 +94,67 @@ async def get_refund(arguments):
     logger.info(f"Executing get_refund with refund_id: {refund_id}")
     return razorpay_client.get_refund({"id": refund_id})
 
+# Settlement handlers
+async def get_settlement(arguments):
+    settlement_id = arguments.get("settlement_id")
+    logger.info(f"Executing get_settlement with settlement_id: {settlement_id}")
+    return razorpay_client.get_settlement({"id": settlement_id})
+
+async def list_settlements(arguments):
+    logger.info(f"Executing list_settlements with arguments: {arguments}")
+    return razorpay_client.list_settlements(arguments)
+
+async def create_ondemand_settlement(arguments):
+    logger.info(f"Executing create_ondemand_settlement with arguments: {arguments}")
+    return razorpay_client.create_ondemand_settlement(arguments)
+
+async def get_settlement_report(arguments):
+    logger.info(f"Executing get_settlement_report with arguments: {arguments}")
+    return razorpay_client.get_settlement_report(arguments)
+
+# Subscription handlers
+async def get_subscription(arguments):
+    subscription_id = arguments.get("subscription_id")
+    logger.info(f"Executing get_subscription with subscription_id: {subscription_id}")
+    return razorpay_client.get_subscription({"id": subscription_id})
+
+async def list_subscriptions(arguments):
+    logger.info(f"Executing list_subscriptions with arguments: {arguments}")
+    return razorpay_client.list_subscriptions(arguments)
+
+async def create_subscription(arguments):
+    logger.info(f"Executing create_subscription with arguments: {arguments}")
+    return razorpay_client.create_subscription(arguments)
+
+async def cancel_subscription(arguments):
+    subscription_id = arguments.get("subscription_id")
+    cancel_at_cycle_end = arguments.get("cancel_at_cycle_end", False)
+    logger.info(f"Executing cancel_subscription with subscription_id: {subscription_id}")
+    return razorpay_client.cancel_subscription({
+        "id": subscription_id,
+        "cancel_at_cycle_end": cancel_at_cycle_end
+    })
+
+async def pause_subscription(arguments):
+    subscription_id = arguments.get("subscription_id")
+    pause_at = arguments.get("pause_at", "now")
+    logger.info(f"Executing pause_subscription with subscription_id: {subscription_id}")
+    return razorpay_client.pause_subscription({
+        "id": subscription_id,
+        "pause_at": pause_at
+    })
+
+async def resume_subscription(arguments):
+    subscription_id = arguments.get("subscription_id")
+    resume_at = arguments.get("resume_at", None)
+    logger.info(f"Executing resume_subscription with subscription_id: {subscription_id}")
+    
+    params = {"id": subscription_id}
+    if resume_at:
+        params["resume_at"] = resume_at
+        
+    return razorpay_client.resume_subscription(params)
+
 def decorate_tool(fn, name, description):
     """Add metadata to tool function for documentation purposes"""
     fn.__name__ = name

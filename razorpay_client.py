@@ -244,3 +244,180 @@ class RazorpayClient:
             logger.error(f"Error creating payment link: {str(e)}")
             logger.error(traceback.format_exc())
             raise
+            
+    # Settlement Methods
+    def get_settlement(self, params):
+        """Get settlement details by settlement ID."""
+        try:
+            settlement_id = params.get('id')
+            if not settlement_id:
+                raise ValueError("Settlement ID is required")
+            
+            return self.client.settlement.fetch(settlement_id)
+        except Exception as e:
+            logger.error(f"Error fetching settlement: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+    
+    def list_settlements(self, params):
+        """List settlements with optional filtering."""
+        try:
+            # Convert params to format expected by Razorpay
+            razorpay_params = {}
+            if 'count' in params:
+                razorpay_params['count'] = params['count']
+            if 'skip' in params:
+                razorpay_params['skip'] = params['skip']
+            if 'from' in params:
+                razorpay_params['from'] = params['from']
+            if 'to' in params:
+                razorpay_params['to'] = params['to']
+            
+            return self.client.settlement.all(razorpay_params)
+        except Exception as e:
+            logger.error(f"Error listing settlements: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+    
+    def create_ondemand_settlement(self, params):
+        """Create an on-demand settlement."""
+        try:
+            settlement_params = {
+                'amount': params.get('amount'),
+                'settle_full_balance': params.get('settle_full_balance', False),
+                'description': params.get('description', ''),
+                'notes': params.get('notes', {})
+            }
+            
+            return self.client.settlement.create_ondemand_settlement(data=settlement_params)
+        except Exception as e:
+            logger.error(f"Error creating on-demand settlement: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+    
+    def get_settlement_report(self, params):
+        """Get settlement reports with filtering."""
+        try:
+            report_params = {
+                'year': params.get('year'),
+                'month': params.get('month'),
+                'day': params.get('day', None),
+                'count': params.get('count', None),
+                'skip': params.get('skip', None)
+            }
+            
+            return self.client.settlement.report(data=report_params)
+        except Exception as e:
+            logger.error(f"Error getting settlement report: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+            
+    # Subscription Methods
+    def get_subscription(self, params):
+        """Get subscription details by subscription ID."""
+        try:
+            subscription_id = params.get('id')
+            if not subscription_id:
+                raise ValueError("Subscription ID is required")
+            
+            return self.client.subscription.fetch(subscription_id)
+        except Exception as e:
+            logger.error(f"Error fetching subscription: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+    
+    def list_subscriptions(self, params):
+        """List subscriptions with optional filtering."""
+        try:
+            # Convert params to format expected by Razorpay
+            razorpay_params = {}
+            if 'count' in params:
+                razorpay_params['count'] = params['count']
+            if 'skip' in params:
+                razorpay_params['skip'] = params['skip']
+            if 'plan_id' in params:
+                razorpay_params['plan_id'] = params['plan_id']
+            if 'customer_id' in params:
+                razorpay_params['customer_id'] = params['customer_id']
+            
+            return self.client.subscription.all(razorpay_params)
+        except Exception as e:
+            logger.error(f"Error listing subscriptions: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+    
+    def create_subscription(self, params):
+        """Create a new subscription."""
+        try:
+            required_fields = ['plan_id', 'customer_id', 'total_count']
+            for field in required_fields:
+                if field not in params:
+                    raise ValueError(f"{field} is required for creating a subscription")
+            
+            subscription_params = {
+                'plan_id': params.get('plan_id'),
+                'customer_id': params.get('customer_id'),
+                'total_count': params.get('total_count'),
+                'quantity': params.get('quantity', 1),
+                'start_at': params.get('start_at', None),
+                'expire_by': params.get('expire_by', None),
+                'customer_notify': params.get('customer_notify', True),
+                'notes': params.get('notes', {})
+            }
+            
+            return self.client.subscription.create(data=subscription_params)
+        except Exception as e:
+            logger.error(f"Error creating subscription: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+    
+    def cancel_subscription(self, params):
+        """Cancel an active subscription."""
+        try:
+            subscription_id = params.get('id')
+            if not subscription_id:
+                raise ValueError("Subscription ID is required")
+                
+            cancel_params = {
+                'cancel_at_cycle_end': params.get('cancel_at_cycle_end', False)
+            }
+            
+            return self.client.subscription.cancel(subscription_id, data=cancel_params)
+        except Exception as e:
+            logger.error(f"Error cancelling subscription: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+    
+    def pause_subscription(self, params):
+        """Pause an active subscription."""
+        try:
+            subscription_id = params.get('id')
+            if not subscription_id:
+                raise ValueError("Subscription ID is required")
+                
+            pause_params = {
+                'pause_at': params.get('pause_at', 'now')
+            }
+            
+            return self.client.subscription.pause(subscription_id, data=pause_params)
+        except Exception as e:
+            logger.error(f"Error pausing subscription: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+    
+    def resume_subscription(self, params):
+        """Resume a paused subscription."""
+        try:
+            subscription_id = params.get('id')
+            if not subscription_id:
+                raise ValueError("Subscription ID is required")
+                
+            resume_params = {}
+            if 'resume_at' in params:
+                resume_params['resume_at'] = params['resume_at']
+            
+            return self.client.subscription.resume(subscription_id, data=resume_params)
+        except Exception as e:
+            logger.error(f"Error resuming subscription: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
