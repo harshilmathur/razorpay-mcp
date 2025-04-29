@@ -2,7 +2,7 @@
 
 A Model Context Protocol (MCP) server implementation for Razorpay payment integration that enables Claude AI to interact directly with Razorpay's payment services.
 
-![Razorpay MCP Integration](https://razorpay.com/docs/assets/images/logo.svg)
+![Razorpay MCP Integration](https://razorpay.com/docs/build/browser/static/razorpay-docs-dark.6f09b030.svg)
 
 ## Overview
 
