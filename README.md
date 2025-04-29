@@ -1,18 +1,30 @@
 # Razorpay MCP Server
 
-A Model Context Protocol (MCP) server implementation for Razorpay payment integration.
+A Model Context Protocol (MCP) server implementation for Razorpay payment integration that enables Claude AI to interact directly with Razorpay's payment services.
+
+![Razorpay MCP Integration](https://razorpay.com/docs/assets/images/logo.svg)
 
 ## Overview
 
-This project provides a server that implements the Model Context Protocol (MCP) for interfacing with the Razorpay API. It allows AI assistants like Claude to directly interact with Razorpay's payment platform to perform various operations including managing payments, orders, customers, and payment links.
+This project creates a bridge between AI assistants (like Claude) and Razorpay's payment platform using the Model Context Protocol (MCP). It allows AI to perform various payment operations directly, without requiring manual API integration:
+
+- Process payments and refunds
+- Create and track orders
+- Manage customer profiles
+- Generate payment links
+- And more...
+
+The implementation follows the official MCP specification and uses the Razorpay API to provide a seamless connection between AI assistants and payment processing capabilities.
 
 ## Features
 
-- Comprehensive Razorpay API integration
-- Full MCP protocol support with the official MCP SDK 
-- REST API endpoints for direct HTTP access
-- Claude Desktop integration via stdio protocol
-- Web interface for easy server management
+- **Comprehensive Razorpay Integration**: Access to payments, refunds, orders, customers, and payment links
+- **Dual-mode Operation**: 
+  - HTTP server with web interface for API access
+  - Direct stdio connection for Claude Desktop integration
+- **Official MCP SDK Support**: Implements the Model Context Protocol to spec
+- **Developer-friendly**: Clear documentation, configuration examples, and setup guides
+- **Production Ready**: Error handling, proper logging, and security considerations
 
 ## Implementation Details
 
@@ -119,21 +131,148 @@ When using the HTTP server (main.py), the following endpoints are available:
 
 ## Installation
 
-1. Install the required packages:
-   ```bash
-   pip install flask gunicorn razorpay mcp jsonschema
-   ```
+### Prerequisites
 
-2. Set up your environment variables (Razorpay API keys):
-   ```bash
-   export RAZORPAY_KEY_ID=your_key_id
-   export RAZORPAY_KEY_SECRET=your_key_secret
-   ```
+- Python 3.7 or higher
+- pip (Python package manager)
+- Razorpay account with API keys
 
-3. Run the server:
-   ```bash
-   python main.py
-   ```
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/razorpay-mcp-server.git
+cd razorpay-mcp-server
+```
+
+### Step 2: Set Up Python Environment (Optional but Recommended)
+
+Create and activate a virtual environment:
+
+```bash
+# Create a virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+```
+
+### Step 3: Install Dependencies
+
+Install all required packages:
+
+```bash
+pip install flask gunicorn razorpay mcp jsonschema
+```
+
+The dependencies include:
+- **Flask**: Web framework for the HTTP server
+- **Gunicorn**: WSGI HTTP server for production deployment
+- **Razorpay**: Official Razorpay Python SDK
+- **MCP**: Model Context Protocol Python SDK
+- **jsonschema**: For JSON schema validation
+
+### Step 4: Configure Environment Variables
+
+Set up your Razorpay API credentials:
+
+```bash
+# On Windows (Command Prompt):
+set RAZORPAY_KEY_ID=your_key_id
+set RAZORPAY_KEY_SECRET=your_key_secret
+
+# On Windows (PowerShell):
+$env:RAZORPAY_KEY_ID = "your_key_id"
+$env:RAZORPAY_KEY_SECRET = "your_key_secret"
+
+# On macOS/Linux:
+export RAZORPAY_KEY_ID=your_key_id
+export RAZORPAY_KEY_SECRET=your_key_secret
+```
+
+Alternatively, create a `.env` file in the project root:
+```
+RAZORPAY_KEY_ID=your_key_id
+RAZORPAY_KEY_SECRET=your_key_secret
+```
+
+### Step 5: Run the Server
+
+#### Option A: HTTP Server with Web Interface
+
+Start the HTTP server:
+
+```bash
+# Development mode
+python main.py
+
+# Production mode with Gunicorn
+gunicorn --bind 0.0.0.0:5000 main:app
+```
+
+The server will be available at: http://localhost:5000
+
+#### Option B: Direct MCP Server for Claude Desktop
+
+Run the direct MCP server for use with Claude Desktop:
+
+```bash
+python razorpay_mcp_server.py
+```
+
+This will start the MCP server using the stdio transport, which can be connected to Claude Desktop.
+
+### Step 6: Connecting with Claude Desktop
+
+1. Install [Claude Desktop](https://claude.ai/desktop)
+2. Go to Settings > Desktop
+3. Click "Add Service"
+4. Enter the following details:
+   - Name: Razorpay MCP
+   - Command: `python razorpay_mcp_server.py`
+   - Working Directory: (Your project directory)
+5. Set the environment variables:
+   - RAZORPAY_KEY_ID=your_key_id
+   - RAZORPAY_KEY_SECRET=your_key_secret
+6. Click "Save" and then "Connect"
+
+Alternatively, you can use the provided `claude_desktop_config.json` file and import it into Claude Desktop.
+
+## Available Functionality
+
+### Razorpay Tools
+
+The MCP server provides the following Razorpay integration tools:
+
+| Tool Name | Description | Parameters |
+|-----------|-------------|------------|
+| `payment_fetch` | Fetch payment details | `payment_id` (string) |
+| `list_payments` | List payments with filtering | Various filter options |
+| `order_create` | Create a new order | `amount` (int), `currency` (string), etc. |
+| `order_fetch` | Get order details | `order_id` (string) |
+| `list_orders` | List orders with filtering | Various filter options |
+| `customer_create` | Create a new customer | `name` (string), `email` (string), etc. |
+| `customer_fetch` | Get customer details | `customer_id` (string) |
+| `payment_link_create` | Create a payment link | `amount` (int), `description` (string), etc. |
+| `payment_link_fetch` | Get payment link details | `payment_link_id` (string) |
+| `refund_create` | Create a refund | `payment_id` (string), `amount` (int), etc. |
+| `refund_fetch` | Get refund details | `refund_id` (string) |
+
+### HTTP API Endpoints
+
+When using the HTTP server (Option A), the following endpoints are available:
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Home page with server info and start button |
+| `/mcp/health` | GET | Health check endpoint |
+| `/mcp/tools` | GET | List available tools |
+| `/mcp/metadata` | GET | Get server metadata |
+| `/mcp/request` | POST | Execute a specific tool |
+| `/mcp` | POST | Standard MCP protocol endpoint |
+| `/start-mcp` | GET | Start the stdio MCP server |
 
 ## License
 
