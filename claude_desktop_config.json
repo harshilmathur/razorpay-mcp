@@ -15,6 +15,10 @@
     "Help me create a new payment link for my customer",
     "Check the status of my latest order",
     "Create a new customer profile",
-    "Process a refund for the latest payment"
+    "Process a refund for the latest payment",
+    "Create a subscription plan for my service",
+    "List all my active subscriptions",
+    "Cancel a subscription for a specific customer",
+    "Check my settlement details for this month"
   ]
 }

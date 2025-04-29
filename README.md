@@ -92,37 +92,42 @@ To use this MCP server with Claude Desktop:
 The MCP server provides the following Razorpay API tools:
 
 ### Payment and Refund Tools
-- **razorpay_payments_get**: Fetch payment details by payment ID
-- **razorpay_payments_list**: List payments with optional filtering
-- **razorpay_refunds_create**: Create a new refund
-- **razorpay_refunds_get**: Get refund details by refund ID
+- **payment_fetch**: Fetch payment details by payment ID
+- **payments_list**: List payments with optional filtering
+- **refund_create**: Create a new refund
+- **refund_fetch**: Get refund details by refund ID
 
 ### Order Tools
-- **razorpay_orders_create**: Create a new order
-- **razorpay_orders_get**: Get order details by order ID
-- **razorpay_orders_list**: List orders with optional filtering
+- **order_create**: Create a new order
+- **order_fetch**: Get order details by order ID
+- **orders_list**: List orders with optional filtering
 
 ### Customer Tools
-- **razorpay_customers_create**: Create a new customer
-- **razorpay_customers_get**: Get customer details by customer ID
+- **customer_create**: Create a new customer
+- **customer_fetch**: Get customer details by customer ID
 
 ### Payment Link Tools
-- **razorpay_payment_links_create**: Create a new payment link
-- **razorpay_payment_links_get**: Get payment link details by payment link ID
+- **payment_link_create**: Create a new payment link
+- **payment_link_fetch**: Get payment link details by payment link ID
 
 ### Settlement Tools
-- **razorpay_settlements_get**: Get settlement details by settlement ID
-- **razorpay_settlements_list**: List settlements with optional filtering
-- **razorpay_settlements_create_ondemand**: Create an on-demand settlement
-- **razorpay_settlements_report**: Get settlement reports with filtering
+- **settlement_fetch**: Get settlement details by settlement ID
+- **settlements_list**: List settlements with optional filtering
+- **settlement_create_ondemand**: Create an on-demand settlement
+- **settlement_report**: Get settlement reports with filtering
 
 ### Subscription Tools
-- **razorpay_subscriptions_get**: Get subscription details by subscription ID
-- **razorpay_subscriptions_list**: List subscriptions with optional filtering
-- **razorpay_subscriptions_create**: Create a new subscription for a customer
-- **razorpay_subscriptions_cancel**: Cancel an active subscription
-- **razorpay_subscriptions_pause**: Pause an active subscription
-- **razorpay_subscriptions_resume**: Resume a paused subscription
+- **subscription_fetch**: Get subscription details by subscription ID
+- **subscriptions_list**: List subscriptions with optional filtering
+- **subscription_create**: Create a new subscription for a customer
+- **subscription_cancel**: Cancel an active subscription
+- **subscription_pause**: Pause an active subscription
+- **subscription_resume**: Resume a paused subscription
+
+### Plan Tools
+- **plan_fetch**: Get plan details by plan ID
+- **plans_list**: List plans with optional filtering
+- **plan_create**: Create a new plan for subscriptions
 
 ## Resources and Prompts
 
@@ -285,52 +290,60 @@ The MCP server provides the following Razorpay integration tools:
 
 | Tool Name | Description | Parameters |
 |-----------|-------------|------------|
-| `razorpay_payments_get` | Fetch payment details | `payment_id` (string) |
-| `razorpay_payments_list` | List payments with filtering | Various filter options |
-| `razorpay_refunds_create` | Create a refund | `payment_id` (string), `amount` (int), etc. |
-| `razorpay_refunds_get` | Get refund details | `refund_id` (string) |
+| `payment_fetch` | Fetch payment details | `payment_id` (string) |
+| `payments_list` | List payments with filtering | Various filter options |
+| `refund_create` | Create a refund | `payment_id` (string), `amount` (int), etc. |
+| `refund_fetch` | Get refund details | `refund_id` (string) |
 
 #### Order Operations
 
 | Tool Name | Description | Parameters |
 |-----------|-------------|------------|
-| `razorpay_orders_create` | Create a new order | `amount` (int), `currency` (string), etc. |
-| `razorpay_orders_get` | Get order details | `order_id` (string) |
-| `razorpay_orders_list` | List orders with filtering | Various filter options |
+| `order_create` | Create a new order | `amount` (int), `currency` (string), etc. |
+| `order_fetch` | Get order details | `order_id` (string) |
+| `orders_list` | List orders with filtering | Various filter options |
 
 #### Customer Operations
 
 | Tool Name | Description | Parameters |
 |-----------|-------------|------------|
-| `razorpay_customers_create` | Create a new customer | `name` (string), `email` (string), etc. |
-| `razorpay_customers_get` | Get customer details | `customer_id` (string) |
+| `customer_create` | Create a new customer | `name` (string), `email` (string), etc. |
+| `customer_fetch` | Get customer details | `customer_id` (string) |
 
 #### Payment Link Operations
 
 | Tool Name | Description | Parameters |
 |-----------|-------------|------------|
-| `razorpay_payment_links_create` | Create a payment link | `amount` (int), `description` (string), etc. |
-| `razorpay_payment_links_get` | Get payment link details | `payment_link_id` (string) |
+| `payment_link_create` | Create a payment link | `amount` (int), `description` (string), etc. |
+| `payment_link_fetch` | Get payment link details | `payment_link_id` (string) |
 
 #### Settlement Operations
 
 | Tool Name | Description | Parameters |
 |-----------|-------------|------------|
-| `razorpay_settlements_get` | Get settlement details | `settlement_id` (string) |
-| `razorpay_settlements_list` | List settlements with filtering | Various filter options |
-| `razorpay_settlements_create_ondemand` | Create an on-demand settlement | `amount` (int), `settle_full_balance` (bool), etc. |
-| `razorpay_settlements_report` | Get settlement reports | `year` (int), `month` (int), `day` (int), etc. |
+| `settlement_fetch` | Get settlement details | `settlement_id` (string) |
+| `settlements_list` | List settlements with filtering | Various filter options |
+| `settlement_create_ondemand` | Create an on-demand settlement | `amount` (int), `settle_full_balance` (bool), etc. |
+| `settlement_report` | Get settlement reports | `year` (int), `month` (int), `day` (int), etc. |
 
 #### Subscription Operations
 
 | Tool Name | Description | Parameters |
 |-----------|-------------|------------|
-| `razorpay_subscriptions_get` | Get subscription details | `subscription_id` (string) |
-| `razorpay_subscriptions_list` | List subscriptions | Various filter options |
-| `razorpay_subscriptions_create` | Create a new subscription | `plan_id` (string), `customer_id` (string), etc. |
-| `razorpay_subscriptions_cancel` | Cancel a subscription | `subscription_id` (string), `cancel_at_cycle_end` (bool) |
-| `razorpay_subscriptions_pause` | Pause a subscription | `subscription_id` (string), `pause_at` (string) |
-| `razorpay_subscriptions_resume` | Resume a subscription | `subscription_id` (string), `resume_at` (string) |
+| `subscription_fetch` | Get subscription details | `subscription_id` (string) |
+| `subscriptions_list` | List subscriptions | Various filter options |
+| `subscription_create` | Create a new subscription | `plan_id` (string), `customer_id` (string), etc. |
+| `subscription_cancel` | Cancel a subscription | `subscription_id` (string), `cancel_at_cycle_end` (bool) |
+| `subscription_pause` | Pause a subscription | `subscription_id` (string), `pause_at` (string) |
+| `subscription_resume` | Resume a subscription | `subscription_id` (string), `resume_at` (string) |
+
+#### Plan Operations
+
+| Tool Name | Description | Parameters |
+|-----------|-------------|------------|
+| `plan_fetch` | Get plan details | `plan_id` (string) |
+| `plans_list` | List plans with filtering | `count` (int), `skip` (int) |
+| `plan_create` | Create a new plan | `period` (string), `interval` (int), `item` (object) |
 
 ### HTTP API Endpoints
 
