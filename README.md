@@ -204,14 +204,16 @@ source venv/bin/activate
 Install all required packages:
 
 ```bash
-pip install flask gunicorn razorpay mcp jsonschema
+pip install flask>=3.1.0 gunicorn>=23.0.0 razorpay>=1.4.2 mcp>=1.6.0 jsonschema>=4.23.0
 ```
+
+Or on Replit, use the Package Management UI to install these packages.
 
 The dependencies include:
 - **Flask**: Web framework for the HTTP server
 - **Gunicorn**: WSGI HTTP server for production deployment
 - **Razorpay**: Official Razorpay Python SDK
-- **MCP**: Model Context Protocol Python SDK
+- **MCP**: Model Context Protocol Python SDK (version 1.6.0 or higher)
 - **jsonschema**: For JSON schema validation
 
 ### Step 4: Configure Environment Variables
