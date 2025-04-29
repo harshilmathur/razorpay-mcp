@@ -143,6 +143,208 @@ RAZORPAY_TOOLS = [
                 "description": "Customer ID"
             }
         }
+    },
+    
+    {
+        "name": "settlement_fetch",
+        "description": "Fetch settlement details",
+        "parameters": {
+            "settlement_id": {
+                "type": "string",
+                "description": "Settlement ID"
+            }
+        }
+    },
+    
+    {
+        "name": "settlements_list",
+        "description": "List settlements with optional filtering",
+        "parameters": {
+            "count": {
+                "type": "integer",
+                "description": "Number of settlements to fetch (default: 10)"
+            },
+            "skip": {
+                "type": "integer",
+                "description": "Number of settlements to skip (default: 0)"
+            },
+            "from": {
+                "type": "integer",
+                "description": "Timestamp of the starting date for settlement fetching"
+            },
+            "to": {
+                "type": "integer",
+                "description": "Timestamp of the ending date for settlement fetching"
+            }
+        }
+    },
+    
+    {
+        "name": "settlement_create_ondemand",
+        "description": "Create an on-demand settlement",
+        "parameters": {
+            "amount": {
+                "type": "integer",
+                "description": "Settlement amount in smallest currency unit"
+            },
+            "settle_full_balance": {
+                "type": "boolean",
+                "description": "Whether to settle the full balance (default: false)"
+            },
+            "description": {
+                "type": "string",
+                "description": "Settlement description"
+            },
+            "notes": {
+                "type": "object",
+                "description": "Additional notes"
+            }
+        }
+    },
+    
+    {
+        "name": "settlement_report",
+        "description": "Get settlement reports with filtering",
+        "parameters": {
+            "year": {
+                "type": "integer",
+                "description": "Year for the settlement report"
+            },
+            "month": {
+                "type": "integer",
+                "description": "Month for the settlement report"
+            },
+            "day": {
+                "type": "integer",
+                "description": "Day for the settlement report (optional)"
+            },
+            "count": {
+                "type": "integer",
+                "description": "Number of reports to fetch (optional)"
+            },
+            "skip": {
+                "type": "integer",
+                "description": "Number of reports to skip (optional)"
+            }
+        }
+    },
+    
+    {
+        "name": "subscription_fetch",
+        "description": "Fetch subscription details",
+        "parameters": {
+            "subscription_id": {
+                "type": "string",
+                "description": "Subscription ID"
+            }
+        }
+    },
+    
+    {
+        "name": "subscriptions_list",
+        "description": "List subscriptions with optional filtering",
+        "parameters": {
+            "count": {
+                "type": "integer",
+                "description": "Number of subscriptions to fetch (default: 10)"
+            },
+            "skip": {
+                "type": "integer",
+                "description": "Number of subscriptions to skip (default: 0)"
+            },
+            "plan_id": {
+                "type": "string",
+                "description": "Filter subscriptions by plan ID"
+            },
+            "customer_id": {
+                "type": "string",
+                "description": "Filter subscriptions by customer ID"
+            }
+        }
+    },
+    
+    {
+        "name": "subscription_create",
+        "description": "Create a new subscription",
+        "parameters": {
+            "plan_id": {
+                "type": "string",
+                "description": "Plan ID"
+            },
+            "customer_id": {
+                "type": "string",
+                "description": "Customer ID"
+            },
+            "total_count": {
+                "type": "integer",
+                "description": "Total number of billing cycles"
+            },
+            "quantity": {
+                "type": "integer",
+                "description": "Quantity of the product (default: 1)"
+            },
+            "start_at": {
+                "type": "integer",
+                "description": "Timestamp for when the subscription starts"
+            },
+            "expire_by": {
+                "type": "integer",
+                "description": "Timestamp for when the subscription link expires"
+            },
+            "customer_notify": {
+                "type": "boolean",
+                "description": "Whether to notify the customer (default: true)"
+            },
+            "notes": {
+                "type": "object",
+                "description": "Additional notes"
+            }
+        }
+    },
+    
+    {
+        "name": "subscription_cancel",
+        "description": "Cancel an active subscription",
+        "parameters": {
+            "subscription_id": {
+                "type": "string",
+                "description": "Subscription ID"
+            },
+            "cancel_at_cycle_end": {
+                "type": "boolean",
+                "description": "Whether to cancel at the end of the billing cycle (default: false)"
+            }
+        }
+    },
+    
+    {
+        "name": "subscription_pause",
+        "description": "Pause an active subscription",
+        "parameters": {
+            "subscription_id": {
+                "type": "string",
+                "description": "Subscription ID"
+            },
+            "pause_at": {
+                "type": "string",
+                "description": "When to pause the subscription (default: 'now')"
+            }
+        }
+    },
+    
+    {
+        "name": "subscription_resume",
+        "description": "Resume a paused subscription",
+        "parameters": {
+            "subscription_id": {
+                "type": "string",
+                "description": "Subscription ID"
+            },
+            "resume_at": {
+                "type": "string",
+                "description": "When to resume the subscription (optional)"
+            }
+        }
     }
 ]
 
@@ -206,6 +408,118 @@ def execute_tool(tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
     
     elif tool_name == "customer_fetch" or tool_name == "customer.fetch":
         return razorpay_client.get_customer({"id": arguments.get("customer_id")})
+        
+    # Settlement tools
+    elif tool_name == "settlement_fetch" or tool_name == "settlement.fetch":
+        return razorpay_client.get_settlement({"id": arguments.get("settlement_id")})
+        
+    elif tool_name == "settlements_list" or tool_name == "settlements.list":
+        params = {}
+        if "count" in arguments:
+            params["count"] = arguments["count"]
+        if "skip" in arguments:
+            params["skip"] = arguments["skip"]
+        if "from" in arguments:
+            params["from"] = arguments["from"]
+        if "to" in arguments:
+            params["to"] = arguments["to"]
+            
+        return razorpay_client.list_settlements(params)
+        
+    elif tool_name == "settlement_create_ondemand" or tool_name == "settlement.create_ondemand":
+        params = {}
+        if "amount" in arguments:
+            params["amount"] = arguments["amount"]
+        if "settle_full_balance" in arguments:
+            params["settle_full_balance"] = arguments["settle_full_balance"]
+        if "description" in arguments:
+            params["description"] = arguments["description"]
+        if "notes" in arguments:
+            params["notes"] = arguments["notes"]
+            
+        return razorpay_client.create_ondemand_settlement(params)
+        
+    elif tool_name == "settlement_report" or tool_name == "settlement.report":
+        params = {
+            "year": arguments.get("year"),
+            "month": arguments.get("month")
+        }
+        
+        if "day" in arguments:
+            params["day"] = arguments["day"]
+        if "count" in arguments:
+            params["count"] = arguments["count"]
+        if "skip" in arguments:
+            params["skip"] = arguments["skip"]
+            
+        return razorpay_client.get_settlement_report(params)
+        
+    # Subscription tools
+    elif tool_name == "subscription_fetch" or tool_name == "subscription.fetch":
+        return razorpay_client.get_subscription({"id": arguments.get("subscription_id")})
+        
+    elif tool_name == "subscriptions_list" or tool_name == "subscriptions.list":
+        params = {}
+        if "count" in arguments:
+            params["count"] = arguments["count"]
+        if "skip" in arguments:
+            params["skip"] = arguments["skip"]
+        if "plan_id" in arguments:
+            params["plan_id"] = arguments["plan_id"]
+        if "customer_id" in arguments:
+            params["customer_id"] = arguments["customer_id"]
+            
+        return razorpay_client.list_subscriptions(params)
+        
+    elif tool_name == "subscription_create" or tool_name == "subscription.create":
+        params = {
+            "plan_id": arguments.get("plan_id"),
+            "customer_id": arguments.get("customer_id"),
+            "total_count": arguments.get("total_count")
+        }
+        
+        if "quantity" in arguments:
+            params["quantity"] = arguments["quantity"]
+        if "start_at" in arguments:
+            params["start_at"] = arguments["start_at"]
+        if "expire_by" in arguments:
+            params["expire_by"] = arguments["expire_by"]
+        if "customer_notify" in arguments:
+            params["customer_notify"] = arguments["customer_notify"]
+        if "notes" in arguments:
+            params["notes"] = arguments["notes"]
+            
+        return razorpay_client.create_subscription(params)
+        
+    elif tool_name == "subscription_cancel" or tool_name == "subscription.cancel":
+        params = {
+            "id": arguments.get("subscription_id")
+        }
+        
+        if "cancel_at_cycle_end" in arguments:
+            params["cancel_at_cycle_end"] = arguments["cancel_at_cycle_end"]
+            
+        return razorpay_client.cancel_subscription(params)
+        
+    elif tool_name == "subscription_pause" or tool_name == "subscription.pause":
+        params = {
+            "id": arguments.get("subscription_id")
+        }
+        
+        if "pause_at" in arguments:
+            params["pause_at"] = arguments["pause_at"]
+            
+        return razorpay_client.pause_subscription(params)
+        
+    elif tool_name == "subscription_resume" or tool_name == "subscription.resume":
+        params = {
+            "id": arguments.get("subscription_id")
+        }
+        
+        if "resume_at" in arguments:
+            params["resume_at"] = arguments["resume_at"]
+            
+        return razorpay_client.resume_subscription(params)
     
     else:
         raise ValueError(f"Unknown tool: {tool_name}")
